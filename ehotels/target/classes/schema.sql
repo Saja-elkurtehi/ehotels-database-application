@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS hotel_email (
 CREATE TABLE IF NOT EXISTS room (
     room_ID SERIAL PRIMARY KEY,
     hotel_ID INTEGER NOT NULL,
-    price DECIMAL(10,2),
+    price BIGINT,
     extension BOOLEAN,
     capacity SMALLINT,
     view_type VARCHAR(255),
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS room_amenity (
 
 CREATE TABLE IF NOT EXISTS employee (
     employee_ID SERIAL PRIMARY KEY,
-    SSN VARCHAR(11) NOT NULL, 
+    SSN INTEGER NOT NULL, 
     full_name VARCHAR(255),
     address VARCHAR(255)
 );
@@ -86,10 +86,10 @@ CREATE TABLE IF NOT EXISTS employee_role (
 CREATE TABLE IF NOT EXISTS manager (
     employee_ID INTEGER NOT NULL,
     hotel_ID INTEGER NOT NULL,
-    CONSTRAINT fk_manager_ID FOREIGN KEY (employee_ID)
+    CONSTRAINT fk_manager_id FOREIGN KEY (employee_ID)
         REFERENCES employee (employee_ID)
         ON DELETE CASCADE,
-    CONSTRAINT fk_manager_hotel_ID FOREIGN KEY (hotel_ID)
+    CONSTRAINT fk_hotel FOREIGN KEY (hotel_ID)
         REFERENCES hotel (hotel_ID)
         ON DELETE CASCADE
 );
