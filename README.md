@@ -45,23 +45,29 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 
 ```bash
 psql -U postgres -c "CREATE DATABASE ehotels;"
-
-In terminal:
-mvn clean package
+```
+### **In terminal:**
+```mvn clean package```
 This compiles your code and packages it into a JAR in target/.
-Run the application:
-mvn spring-boot:run
+### **Run the application:**
+```mvn spring-boot:run```
 
 Check logs:
 If successful, you’ll see lines like:
-Tomcat started on port(s): 8080 (http)
+```Tomcat started on port(s): 8080 (http)
 Started EHotelsBookingSystemApplication in ...
-Also look for messages like Executing SQL script from class path resource [schema.sql] / [data.sql].
+```
+Also look for messages like ```Executing SQL script from class path resource [schema.sql] / [data.sql].```
 Verify the DB is populated:
-In terminal: psql -h localhost -U postgres -d ehotels
+In terminal:
+```psql -h localhost -U postgres -d ehotels```
 In a psql shell:
-\c ehotels
+```\c ehotels
 \dt
 SELECT * FROM hotel;
+```
 You should see the newly created tables and inserted data.
 Alternatively use DBeaver to view database 
+### **Document for SQL,GIT**
+https://docs.google.com/document/d/1AUH3_5sefX7gKDQiJn3YqkNPCm6gmBv8htsFH7WlmTk/edit?usp=sharing
+
