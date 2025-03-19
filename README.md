@@ -30,7 +30,9 @@ This project is a **Spring Boot** application for an **e-Hotels booking and rent
 4. **DBeaver** (optional)  
    - If you’d like a GUI to browse your PostgreSQL database.  
    - [Download DBeaver](https://dbeaver.io/download/) or use any other DB client.
-
+https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pic1.png
+https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pic2.png
+https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pic3.png
 ---
 
 ## **Installation & Setup**
