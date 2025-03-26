@@ -37,16 +37,14 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 5. **Postman** (optional)  
    -  Once your Spring Boot server is running on http://localhost:8080, you can use Postman to interact with the backend.
 
-## 🧪 Example Requests (Postman)
+ 🧪 Example Requests (Postman)
 
-### 🏨 Get All Hotels
+-  🏨 Get All Hotels
 - **Method:** `GET`  
 - **URL:** `http://localhost:8080/api/hotels`  
 - **Description:** Returns a list of all hotels in the system.
 
----
-
-### ➕ Add a New Room
+-  ➕ Add a New Room
 - **Method:** `POST`  
 - **URL:** `http://localhost:8080/api/rooms`  
 - **Headers:**
@@ -62,7 +60,7 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
    "anyProblems": null
    }
    ```
-- ## Add Amenities to a Room
+-  Add Amenities to a Room
 - **Method:** `POST`  
 - **URL:** `http://localhost:8080/api/rooms/{roomId}/amenities`  
 - **Headers:**
@@ -73,7 +71,7 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
      "amenity": "WiFi"
    }
    ```
-- ### View all Rooms in a Hotel
+-  View all Rooms in a Hotel
 - **Method:** `GET`  
 - **URL:** `http://localhost:8080/api/hotels/{hotelId}/rooms`  
 - **Headers:**
