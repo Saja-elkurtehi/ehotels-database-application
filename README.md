@@ -81,7 +81,7 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 - **Headers:**
   - `Content-Type: application/json`
 
-You can find all other endpoints at 
+You can find all other endpoints at https://github.com/Saja-elkurtehi/ehotels-database-application/blob/repos_and_cntrls/assets/Full%20Endpoint%20Summary.pdf
 
 
 
