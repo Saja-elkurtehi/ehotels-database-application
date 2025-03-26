@@ -12,7 +12,7 @@ LEFT JOIN
 LEFT JOIN 
     booking bk ON b.booking_id = bk.booking_id
 WHERE 
-    bk.status != 'confirmed' OR bk.status IS NULL
+    bk.booking_id IS NULL OR bk.status != 'confirmed'
 GROUP BY 
     h.address;
 
