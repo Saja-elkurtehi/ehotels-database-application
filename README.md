@@ -37,8 +37,6 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 5. **Postman** (optional)  
    -  Once your Spring Boot server is running on http://localhost:8080, you can use Postman to interact with the backend.
 
----
-
 ## 🧪 Example Requests (Postman)
 
 ### 🏨 Get All Hotels
@@ -84,9 +82,9 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 You can find all other endpoints at https://github.com/Saja-elkurtehi/ehotels-database-application/blob/repos_and_cntrls/assets/Full%20Endpoint%20Summary.pdf
 
 
+---
 
-
-## **Installation & Setup**
+### **Installation & Setup**
 
 1. **Clone the repository** (or download and unzip):
    ```bash
