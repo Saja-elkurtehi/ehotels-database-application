@@ -34,8 +34,55 @@ https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pi
 https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pic2.png
 https://github.com/Saja-elkurtehi/ehotels-database-application/blob/main/pics/pic3.png
 ---
+5. **Postman** (optional)  
+   -  Once your Spring Boot server is running on http://localhost:8080, you can use Postman to interact with the backend.
 
-## **Installation & Setup**
+ 🧪 Example Requests (Postman)
+
+-  🏨 Get All Hotels
+- **Method:** `GET`  
+- **URL:** `http://localhost:8080/api/hotels`  
+- **Description:** Returns a list of all hotels in the system.
+
+-  ➕ Add a New Room
+- **Method:** `POST`  
+- **URL:** `http://localhost:8080/api/rooms`  
+- **Headers:**
+  - `Content-Type: application/json`
+- **Body (raw JSON):**
+   ```json 
+   {
+   "hotelID": 1,
+   "price": 250,
+   "extension": true,
+   "capacity": 2,
+   "viewType": "sea view",
+   "anyProblems": null
+   }
+   ```
+-  Add Amenities to a Room
+- **Method:** `POST`  
+- **URL:** `http://localhost:8080/api/rooms/{roomId}/amenities`  
+- **Headers:**
+  - `Content-Type: application/json`
+- **Body (raw JSON):**
+ ```json 
+   {
+     "amenity": "WiFi"
+   }
+   ```
+-  View all Rooms in a Hotel
+- **Method:** `GET`  
+- **URL:** `http://localhost:8080/api/hotels/{hotelId}/rooms`  
+- **Headers:**
+  - `Content-Type: application/json`
+
+You can find all other endpoints at https://github.com/Saja-elkurtehi/ehotels-database-application/blob/repos_and_cntrls/assets/Full%20Endpoint%20Summary.pdf
+
+
+---
+
+### **Installation & Setup**
 
 1. **Clone the repository** (or download and unzip):
    ```bash
