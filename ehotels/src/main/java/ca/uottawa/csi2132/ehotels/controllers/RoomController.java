@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -71,12 +70,17 @@ public class RoomController {
         return ResponseEntity.ok("All amenities deleted for room " + roomId);
     }
 
+    // Updated available rooms endpoint: accepts additional filters.
     @GetMapping("/available")
     public List<Room> getAvailableRoomsBetweenDates(
         @RequestParam("start") String start,
         @RequestParam("end") String end,
         @RequestParam(value = "guests", defaultValue = "1") int guests,
-        @RequestParam(value = "hotelChainId", required = false) Long hotelChainId
+        @RequestParam(value = "hotelChainId", required = false) Long hotelChainId,
+        @RequestParam(value = "hotelCategory", required = false) String hotelCategory,
+        @RequestParam(value = "area", required = false) String area,
+        @RequestParam(value = "minPrice", required = false) String minPrice,
+        @RequestParam(value = "maxPrice", required = false) String maxPrice
     ) {
         // Convert input strings to SQL Date
         Date startDate = Date.valueOf(start);
@@ -84,7 +88,14 @@ public class RoomController {
         
         List<Room> availableRooms;
         
-        if (hotelChainId != null) {
+        // Use the new filters if any additional filter is provided.
+        boolean hasAdditionalFilters = (hotelCategory != null && !hotelCategory.isEmpty()) ||
+                                         (area != null && !area.isEmpty()) ||
+                                         (minPrice != null && !minPrice.isEmpty() && maxPrice != null && !maxPrice.isEmpty());
+        
+        if (hasAdditionalFilters) {
+            availableRooms = roomRepository.getAvailableRoomsWithFilters(startDate, endDate, guests, hotelChainId, hotelCategory, area, minPrice, maxPrice);
+        } else if (hotelChainId != null) {
             availableRooms = roomRepository.getAvailableRoomsBetweenDatesAndChain(startDate, endDate, guests, hotelChainId);
         } else {
             availableRooms = roomRepository.getAvailableRoomsBetweenDates(startDate, endDate, guests);
@@ -100,5 +111,4 @@ public class RoomController {
         
         return availableRooms;
     }
-
 }
