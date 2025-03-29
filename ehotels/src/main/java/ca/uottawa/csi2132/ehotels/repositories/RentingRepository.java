@@ -16,8 +16,12 @@ public class RentingRepository {
 
     // Insert a new renting
     public void insertRenting(Renting renting) {
-        String sql = "INSERT INTO renting (check_in_date, check_out_date, status) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO renting (customer_ID, room_ID, employee_ID, check_in_date, check_out_date, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
+                renting.getCustomerId(),
+                renting.getRoomId(),
+                renting.getEmployeeId(),
                 Date.valueOf(renting.getCheckInDate()),
                 renting.getCheckOutDate() != null ? Date.valueOf(renting.getCheckOutDate()) : null,
                 renting.getStatus());
@@ -51,8 +55,12 @@ public class RentingRepository {
 
     // Update renting info (e.g. set check-out date or status)
     public void updateRenting(Long id, Renting renting) {
-        String sql = "UPDATE renting SET check_in_date = ?, check_out_date = ?, status = ? WHERE renting_ID = ?";
+        String sql = "UPDATE renting SET customer_ID = ?, room_ID = ?, employee_ID = ?, " +
+                "check_in_date = ?, check_out_date = ?, status = ? WHERE renting_ID = ?";
         jdbcTemplate.update(sql,
+                renting.getCustomerId(),
+                renting.getRoomId(),
+                renting.getEmployeeId(),
                 Date.valueOf(renting.getCheckInDate()),
                 renting.getCheckOutDate() != null ? Date.valueOf(renting.getCheckOutDate()) : null,
                 renting.getStatus(),

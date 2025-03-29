@@ -16,8 +16,10 @@ public class BookingRepository {
 
     // Insert booking only (separate from books table)
     public Long insertBooking(Booking booking) {
-        String sql = "INSERT INTO booking (status, booking_date, check_in_date, check_out_date) VALUES (?, ?, ?, ?) RETURNING booking_ID";
+        String sql = "INSERT INTO booking (customer_id, room_id, status, booking_date, check_in_date, check_out_date) VALUES (?, ?, ?, ?, ?, ?) RETURNING booking_ID";
         return jdbcTemplate.queryForObject(sql, new Object[] {
+                booking.getCustomerId(),
+                booking.getRoomId(),
                 booking.getStatus(),
                 Date.valueOf(booking.getBookingDate()),
                 booking.getCheckInDate() != null ? Date.valueOf(booking.getCheckInDate()) : null,
@@ -44,10 +46,12 @@ public class BookingRepository {
                 rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null));
     }
 
-    // Update booking (e.g., change status or dates)
+    // Update booking
     public void updateBooking(Long id, Booking booking) {
-        String sql = "UPDATE booking SET status = ?, booking_date = ?, check_in_date = ?, check_out_date = ? WHERE booking_ID = ?";
+        String sql = "UPDATE booking SET customer_id = ?, room_id = ?, status = ?, booking_date = ?, check_in_date = ?, check_out_date = ? WHERE booking_ID = ?";
         jdbcTemplate.update(sql,
+                booking.getCustomerId(),
+                booking.getRoomId(),
                 booking.getStatus(),
                 Date.valueOf(booking.getBookingDate()),
                 booking.getCheckInDate() != null ? Date.valueOf(booking.getCheckInDate()) : null,

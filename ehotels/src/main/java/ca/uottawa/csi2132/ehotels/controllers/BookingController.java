@@ -1,7 +1,6 @@
 package ca.uottawa.csi2132.ehotels.controllers;
 
 import ca.uottawa.csi2132.ehotels.entities.Booking;
-import ca.uottawa.csi2132.ehotels.entities.Books;
 import ca.uottawa.csi2132.ehotels.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,18 +11,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/bookings")
 public class BookingController {
-
     @Autowired
     private BookingRepository bookingRepository;
 
-    // Create a booking and link it to a customer and room
+    // Create a booking
     @PostMapping
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking,
-                                                @RequestParam Long customerId,
-                                                @RequestParam Long roomId) {
+    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
         Long bookingId = bookingRepository.insertBooking(booking);
-        bookingRepository.linkBooking(bookingId, customerId, roomId);
-        return ResponseEntity.ok("Booking created and linked with ID: " + bookingId);
+        return ResponseEntity.ok("Booking created with ID: " + bookingId);
     }
 
     // Get all bookings
