@@ -153,6 +153,9 @@ CREATE TABLE IF NOT EXISTS books (
 -- ==============================================
 CREATE TABLE IF NOT EXISTS renting (
     renting_ID SERIAL PRIMARY KEY,
+    customer_ID INTEGER NOT NULL,
+    room_ID INTEGER NOT NULL,
+    employee_ID INTEGER NOT NULL,
     check_in_date DATE NOT NULL,
     check_out_date DATE,
     status VARCHAR(50)

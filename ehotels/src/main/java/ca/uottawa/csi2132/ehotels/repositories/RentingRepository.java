@@ -28,21 +28,25 @@ public class RentingRepository {
         String sql = "SELECT * FROM renting";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Renting(
                 rs.getLong("renting_ID"),
+                rs.getLong("customer_ID"),
+                rs.getLong("room_ID"),
+                rs.getLong("employee_ID"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null,
-                rs.getString("status")
-        ));
+                rs.getString("status")));
     }
 
     // Get renting by ID
     public Renting getRentingById(Long id) {
         String sql = "SELECT * FROM renting WHERE renting_ID = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Renting(
+        return jdbcTemplate.queryForObject(sql, new Object[] { id }, (rs, rowNum) -> new Renting(
                 rs.getLong("renting_ID"),
+                rs.getLong("customer_ID"),
+                rs.getLong("room_ID"),
+                rs.getLong("employee_ID"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null,
-                rs.getString("status")
-        ));
+                rs.getString("status")));
     }
 
     // Update renting info (e.g. set check-out date or status)

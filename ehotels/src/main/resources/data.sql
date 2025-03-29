@@ -702,9 +702,9 @@ INSERT INTO books (booking_ID, customer_ID, room_ID) VALUES
 -- 4. Renting Data
 -- ==============================
 -- Suppose 2 rentals occurred:
-INSERT INTO renting (check_in_date, check_out_date, status) VALUES
-  ('2025-05-10', '2025-05-12', 'Completed'),
-  ('2025-05-20', '2025-05-25', 'Ongoing');
+INSERT INTO renting (customer_ID, room_ID, employee_ID, check_in_date, check_out_date, status) VALUES
+  (1, 1, 1, '2025-05-10', '2025-05-12', 'Completed'),
+  (1, 1, 1, '2025-05-20', '2025-05-25', 'Ongoing');
 
 -- ==============================
 -- 5. Archive Data
