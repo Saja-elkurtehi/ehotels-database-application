@@ -14,9 +14,10 @@ public class BookingRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Insert booking only (separate from books table)
+    // Insert booking with customer_ID and room_ID included
     public Long insertBooking(Booking booking) {
-        String sql = "INSERT INTO booking (customer_id, room_id, status, booking_date, check_in_date, check_out_date) VALUES (?, ?, ?, ?, ?, ?) RETURNING booking_ID";
+        String sql = "INSERT INTO booking (customer_ID, room_ID, status, booking_date, check_in_date, check_out_date) " +
+                     "VALUES (?, ?, ?, ?, ?, ?) RETURNING booking_ID";
         return jdbcTemplate.queryForObject(sql, new Object[] {
                 booking.getCustomerId(),
                 booking.getRoomId(),
@@ -27,7 +28,7 @@ public class BookingRepository {
         }, Long.class);
     }
 
-    // Link booking ↔ customer ↔ room in `books` table
+    // Insert record into books table to link booking, customer, and room
     public void linkBooking(Long bookingId, Long customerId, Long roomId) {
         String sql = "INSERT INTO books (booking_ID, customer_ID, room_ID) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, bookingId, customerId, roomId);
@@ -43,15 +44,15 @@ public class BookingRepository {
                 rs.getString("status"),
                 rs.getDate("booking_date").toLocalDate(),
                 rs.getDate("check_in_date") != null ? rs.getDate("check_in_date").toLocalDate() : null,
-                rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null));
+                rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null
+        ));
     }
 
-    // Update booking
+    // Update booking (for example, updating status or dates)
     public void updateBooking(Long id, Booking booking) {
-        String sql = "UPDATE booking SET customer_id = ?, room_id = ?, status = ?, booking_date = ?, check_in_date = ?, check_out_date = ? WHERE booking_ID = ?";
+        String sql = "UPDATE booking SET status = ?, booking_date = ?, check_in_date = ?, check_out_date = ? " +
+                     "WHERE booking_ID = ?";
         jdbcTemplate.update(sql,
-                booking.getCustomerId(),
-                booking.getRoomId(),
                 booking.getStatus(),
                 Date.valueOf(booking.getBookingDate()),
                 booking.getCheckInDate() != null ? Date.valueOf(booking.getCheckInDate()) : null,
