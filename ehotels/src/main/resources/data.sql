@@ -1,3 +1,11 @@
+-- Clear existing data before inserting new records
+TRUNCATE TABLE 
+    booking, books, checks_in, renting, archives, archive, 
+    room_amenity, room, hotel_email, hotel_phone, hotel, 
+    hotel_chain_email, hotel_chain_phone, hotel_chain, 
+    employee_role, manager, employee, customer
+RESTART IDENTITY CASCADE;
+
 -- ========================================================
 -- 1. Hotel Chain Data
 -- ========================================================

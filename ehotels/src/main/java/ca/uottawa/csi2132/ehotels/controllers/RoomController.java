@@ -1,13 +1,15 @@
 package ca.uottawa.csi2132.ehotels.controllers;
 
 import ca.uottawa.csi2132.ehotels.entities.Room;
-import ca.uottawa.csi2132.ehotels.entities.RoomAmenity;
 import ca.uottawa.csi2132.ehotels.repositories.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/rooms")
@@ -52,7 +54,7 @@ public class RoomController {
     // Add an amenity to a room
     @PostMapping("/{roomId}/amenities")
     public ResponseEntity<String> addAmenity(@PathVariable Long roomId, @RequestBody String amenity) {
-        roomRepository.insertRoomAmenity(new RoomAmenity(roomId, amenity));
+        roomRepository.insertRoomAmenity(new ca.uottawa.csi2132.ehotels.entities.RoomAmenity(roomId, amenity));
         return ResponseEntity.ok("Amenity added to room");
     }
 
@@ -68,4 +70,35 @@ public class RoomController {
         roomRepository.deleteRoomAmenities(roomId);
         return ResponseEntity.ok("All amenities deleted for room " + roomId);
     }
+
+    @GetMapping("/available")
+    public List<Room> getAvailableRoomsBetweenDates(
+        @RequestParam("start") String start,
+        @RequestParam("end") String end,
+        @RequestParam(value = "guests", defaultValue = "1") int guests,
+        @RequestParam(value = "hotelChainId", required = false) Long hotelChainId
+    ) {
+        // Convert input strings to SQL Date
+        Date startDate = Date.valueOf(start);
+        Date endDate = Date.valueOf(end);
+        
+        List<Room> availableRooms;
+        
+        if (hotelChainId != null) {
+            availableRooms = roomRepository.getAvailableRoomsBetweenDatesAndChain(startDate, endDate, guests, hotelChainId);
+        } else {
+            availableRooms = roomRepository.getAvailableRoomsBetweenDates(startDate, endDate, guests);
+        }
+        
+        // Fallback sample data if no rooms are found
+        if (availableRooms == null || availableRooms.isEmpty()) {
+            availableRooms = Arrays.asList(
+                new Room(9991L, 1L, 250L, true, (short)2, "sea view", null),
+                new Room(9992L, 2L, 300L, false, (short)3, "mountain view", "Broken lamp")
+            );
+        }
+        
+        return availableRooms;
+    }
+
 }

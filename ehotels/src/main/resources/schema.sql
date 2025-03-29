@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS renting CASCADE;
+DROP TABLE IF EXISTS booking CASCADE;
+
 -- ==============================================
 -- Hotel Chain Table
 -- ==============================================

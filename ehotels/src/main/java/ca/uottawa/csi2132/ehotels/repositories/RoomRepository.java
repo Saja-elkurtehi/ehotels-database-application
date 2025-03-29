@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -91,5 +92,73 @@ public class RoomRepository {
     public void deleteRoomAmenities(Long roomId) {
         String sql = "DELETE FROM room_amenity WHERE room_ID = ?";
         jdbcTemplate.update(sql, roomId);
+    }
+     // Available rooms query: Returns rooms that are not booked or rented in the given date range,
+    // and that have a capacity greater than or equal to the specified minCapacity.
+    public List<Room> getAvailableRoomsBetweenDates(Date startDate, Date endDate, int minCapacity) {
+        String sql = """
+            SELECT r.* FROM room r
+            WHERE r.capacity >= ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
+        """;
+    
+        return jdbcTemplate.query(sql,
+                new Object[]{minCapacity, endDate, startDate, endDate, startDate},
+                (rs, rowNum) -> new Room(
+                    rs.getLong("room_ID"),
+                    rs.getLong("hotel_ID"),
+                    rs.getLong("price"),
+                    rs.getBoolean("extension"),
+                    rs.getShort("capacity"),
+                    rs.getString("view_type"),
+                    rs.getString("any_problems")
+                )
+        );
+    }
+    public List<Room> getAvailableRoomsBetweenDatesAndChain(Date startDate, Date endDate, int minCapacity, Long hotelChainId) {
+        String sql = """
+            SELECT r.* FROM room r
+            JOIN hotel h ON r.hotel_ID = h.hotel_ID
+            WHERE r.capacity >= ?
+              AND h.hotel_chain_ID = ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
+        """;
+        
+        return jdbcTemplate.query(sql,
+                new Object[]{minCapacity, hotelChainId, endDate, startDate, endDate, startDate},
+                (rs, rowNum) -> new Room(
+                    rs.getLong("room_ID"),
+                    rs.getLong("hotel_ID"),
+                    rs.getLong("price"),
+                    rs.getBoolean("extension"),
+                    rs.getShort("capacity"),
+                    rs.getString("view_type"),
+                    rs.getString("any_problems")
+                )
+        );
     }
 }
