@@ -124,6 +124,8 @@ CREATE TABLE IF NOT EXISTS customer (
 -- ==============================================
 CREATE TABLE IF NOT EXISTS booking (
     booking_ID SERIAL PRIMARY KEY,
+    customer_ID INTEGER NOT NULL,
+    room_ID INTEGER NOT NULL,
     status VARCHAR(50),
     booking_date DATE NOT NULL,
     check_in_date DATE,

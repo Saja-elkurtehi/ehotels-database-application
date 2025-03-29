@@ -680,10 +680,10 @@ INSERT INTO customer (SSN, full_name, address, registration_date) VALUES
 -- 2. Booking Data (3 bookings)
 -- ==============================
 
-INSERT INTO booking (status, booking_date, check_in_date, check_out_date) VALUES
-  ('Reserved', '2025-05-01', '2025-05-10', '2025-05-12'),
-  ('Canceled', '2025-05-03', '2025-05-15', '2025-05-17'),
-  ('Reserved', '2025-05-05', '2025-05-20', '2025-05-25');
+INSERT INTO booking (customer_ID, room_ID, status, booking_date, check_in_date, check_out_date) VALUES
+  (1, 1, 'Reserved', '2025-05-01', '2025-05-10', '2025-05-12'),
+  (1, 1, 'Canceled', '2025-05-03', '2025-05-15', '2025-05-17'),
+  (1, 1, 'Reserved', '2025-05-05', '2025-05-20', '2025-05-25');
 
 -- ==============================
 -- 3. Books Data
