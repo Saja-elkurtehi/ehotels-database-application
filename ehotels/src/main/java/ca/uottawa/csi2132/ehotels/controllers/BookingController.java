@@ -18,16 +18,11 @@ public class BookingController {
     // Create a booking. The booking data comes in the request body,
     // and the customerId and roomId are provided as query parameters.
     @PostMapping
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking,
-                                                  @RequestParam Long customerId,
-                                                  @RequestParam Long roomId) {
-        // Set customer and room IDs from query parameters into the booking object
-        booking.setCustomerId(customerId);
-        booking.setRoomId(roomId);
-        // Insert the booking record and retrieve its generated ID
+    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
+        // Insert the booking and retrieve the generated ID
         Long bookingId = bookingRepository.insertBooking(booking);
-        // Optionally, insert a linking record into the books table
-        bookingRepository.linkBooking(bookingId, customerId, roomId);
+        // Link the booking with customer and room (if necessary)
+        bookingRepository.linkBooking(bookingId, booking.getCustomerId(), booking.getRoomId());
         return ResponseEntity.ok("Booking created and linked with ID: " + bookingId);
     }
 
