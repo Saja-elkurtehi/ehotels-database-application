@@ -1,20 +1,30 @@
 -- view 1 num of available rooms per area 
 CREATE OR REPLACE VIEW available_rooms_per_area AS
-SELECT 
-    h.address, 
-    COUNT(*) AS available_rooms
-FROM 
+SELECT
+    h.hotel_id, h.address,
+    COUNT(DISTINCT r.room_id) AS available_rooms
+FROM
     room r
-JOIN 
+JOIN
     hotel h ON r.hotel_id = h.hotel_id
-LEFT JOIN 
-    books b ON r.room_id = b.room_id
-LEFT JOIN 
-    booking bk ON b.booking_id = bk.booking_id
-WHERE 
-    bk.booking_id IS NULL OR bk.status != 'confirmed'
-GROUP BY 
-    h.address;
+WHERE
+    r.room_id NOT IN (
+        -- Rooms with active bookings (CheckedIn status)
+        SELECT DISTINCT b.room_id
+        FROM booking b
+        WHERE b.status = 'CheckedIn'
+        AND CURRENT_DATE BETWEEN b.check_in_date AND b.check_out_date
+        
+        UNION
+        
+        -- Rooms with active rentings
+        SELECT DISTINCT rnt.room_id
+        FROM renting rnt
+        WHERE rnt.status IN ('Active', 'Ongoing')
+        AND CURRENT_DATE BETWEEN rnt.check_in_date AND rnt.check_out_date
+    )
+GROUP BY
+    h.hotel_id, h.address;
 
 -- view 2 aggregated capac of all rooms per hotel
 CREATE OR REPLACE VIEW aggregated_room_capacity AS

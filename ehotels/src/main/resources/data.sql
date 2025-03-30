@@ -1,3 +1,11 @@
+-- Clear existing data before inserting new records
+TRUNCATE TABLE 
+    booking, books, checks_in, renting, archives, archive, 
+    room_amenity, room, hotel_email, hotel_phone, hotel, 
+    hotel_chain_email, hotel_chain_phone, hotel_chain, 
+    employee_role, manager, employee, customer
+RESTART IDENTITY CASCADE;
+
 -- ========================================================
 -- 1. Hotel Chain Data
 -- ========================================================
@@ -33,62 +41,62 @@ INSERT INTO hotel_chain_email (hotel_chain_ID, email) VALUES
 -- ========================================================
 -- 1. Hilton (hotel_chain_ID = 1) -- Two hotels in New York ensure the “same area” requirement.
 INSERT INTO hotel (hotel_chain_ID, rating, num_of_rooms, address) VALUES
-  (1, 5, 120, '1 Hilton Drive, New York, NY'),
-  (1, 4, 100, '2 Hilton Street, New York, NY'),
-  (1, 3, 80,  '3 Hilton Avenue, Boston, MA'),
-  (1, 4, 90,  '4 Hilton Boulevard, Philadelphia, PA'),
-  (1, 5, 110, '5 Hilton Road, Washington, DC'),
-  (1, 4, 95,  '6 Hilton Court, Miami, FL'),
-  (1, 3, 70,  '7 Hilton Terrace, Atlanta, GA'),
-  (1, 4, 85,  '8 Hilton Place, Seattle, WA');
+  (1, 5, 5, '1 Hilton Drive, New York, NY'),
+  (1, 4, 5, '2 Hilton Street, New York, NY'),
+  (1, 3, 5,  '3 Hilton Avenue, Boston, MA'),
+  (1, 4, 5,  '4 Hilton Boulevard, Philadelphia, PA'),
+  (1, 5, 5, '5 Hilton Road, Washington, DC'),
+  (1, 4, 5,  '6 Hilton Court, Miami, FL'),
+  (1, 3, 5,  '7 Hilton Terrace, Atlanta, GA'),
+  (1, 4, 5,  '8 Hilton Place, Seattle, WA');
 
 -- ========================================================
 -- 2. Marriott (hotel_chain_ID = 2) -- Two hotels in Chicago.
 INSERT INTO hotel (hotel_chain_ID, rating, num_of_rooms, address) VALUES
-  (2, 5, 130, '1 Marriott Drive, Chicago, IL'),
-  (2, 4, 110, '2 Marriott Street, Chicago, IL'),
-  (2, 3, 90,  '3 Marriott Avenue, Detroit, MI'),
-  (2, 4, 100, '4 Marriott Boulevard, Cleveland, OH'),
-  (2, 5, 120, '5 Marriott Road, St. Louis, MO'),
-  (2, 4, 105, '6 Marriott Court, Minneapolis, MN'),
-  (2, 3, 85,  '7 Marriott Terrace, Indianapolis, IN'),
-  (2, 4, 95,  '8 Marriott Place, Cincinnati, OH');
+  (2, 5, 5, '1 Marriott Drive, Chicago, IL'),
+  (2, 4, 5, '2 Marriott Street, Chicago, IL'),
+  (2, 3, 5,  '3 Marriott Avenue, Detroit, MI'),
+  (2, 4, 5, '4 Marriott Boulevard, Cleveland, OH'),
+  (2, 5, 5, '5 Marriott Road, St. Louis, MO'),
+  (2, 4, 5, '6 Marriott Court, Minneapolis, MN'),
+  (2, 3, 5,  '7 Marriott Terrace, Indianapolis, IN'),
+  (2, 4, 5,  '8 Marriott Place, Cincinnati, OH');
 
 -- ========================================================
 -- 3. Hyatt (hotel_chain_ID = 3) -- Two hotels in Miami.
 INSERT INTO hotel (hotel_chain_ID, rating, num_of_rooms, address) VALUES
-  (3, 5, 140, '1 Hyatt Drive, Miami, FL'),
-  (3, 4, 115, '2 Hyatt Street, Miami, FL'),
-  (3, 3, 95,  '3 Hyatt Avenue, Orlando, FL'),
-  (3, 4, 105, '4 Hyatt Boulevard, Tampa, FL'),
-  (3, 5, 125, '5 Hyatt Road, Atlanta, GA'),
-  (3, 4, 110, '6 Hyatt Court, New Orleans, LA'),
-  (3, 3, 90,  '7 Hyatt Terrace, Dallas, TX'),
-  (3, 4, 100, '8 Hyatt Place, Houston, TX');
+  (3, 5, 5, '1 Hyatt Drive, Miami, FL'),
+  (3, 4, 5, '2 Hyatt Street, Miami, FL'),
+  (3, 3, 5,  '3 Hyatt Avenue, Orlando, FL'),
+  (3, 4, 5, '4 Hyatt Boulevard, Tampa, FL'),
+  (3, 5, 5, '5 Hyatt Road, Atlanta, GA'),
+  (3, 4, 5, '6 Hyatt Court, New Orleans, LA'),
+  (3, 3, 5,  '7 Hyatt Terrace, Dallas, TX'),
+  (3, 4, 5, '8 Hyatt Place, Houston, TX');
 
 -- ========================================================
 -- 4. InterContinental (hotel_chain_ID = 4) -- Two hotels in Los Angeles.
 INSERT INTO hotel (hotel_chain_ID, rating, num_of_rooms, address) VALUES
-  (4, 5, 150, '1 InterContinental Drive, Los Angeles, CA'),
-  (4, 4, 120, '2 InterContinental Street, Los Angeles, CA'),
-  (4, 3, 100, '3 InterContinental Avenue, San Diego, CA'),
-  (4, 4, 110, '4 InterContinental Boulevard, San Francisco, CA'),
-  (4, 5, 130, '5 InterContinental Road, Phoenix, AZ'),
-  (4, 4, 115, '6 InterContinental Court, Las Vegas, NV'),
-  (4, 3, 95,  '7 InterContinental Terrace, Portland, OR'),
-  (4, 4, 105, '8 InterContinental Place, Seattle, WA');
+  (4, 5, 5, '1 InterContinental Drive, Los Angeles, CA'),
+  (4, 4, 5, '2 InterContinental Street, Los Angeles, CA'),
+  (4, 3, 5, '3 InterContinental Avenue, San Diego, CA'),
+  (4, 4, 5, '4 InterContinental Boulevard, San Francisco, CA'),
+  (4, 5, 5, '5 InterContinental Road, Phoenix, AZ'),
+  (4, 4, 5, '6 InterContinental Court, Las Vegas, NV'),
+  (4, 3, 5,  '7 InterContinental Terrace, Portland, OR'),
+  (4, 4, 5, '8 InterContinental Place, Seattle, WA');
 
 -- ========================================================
 -- 5. Accor (hotel_chain_ID = 5) -- Two hotels in San Francisco.
 INSERT INTO hotel (hotel_chain_ID, rating, num_of_rooms, address) VALUES
-  (5, 5, 160, '1 Accor Drive, San Francisco, CA'),
-  (5, 4, 130, '2 Accor Street, San Francisco, CA'),
-  (5, 3, 110, '3 Accor Avenue, Los Angeles, CA'),
-  (5, 4, 120, '4 Accor Boulevard, San Diego, CA'),
-  (5, 5, 140, '5 Accor Road, Las Vegas, NV'),
-  (5, 4, 125, '6 Accor Court, Phoenix, AZ'),
-  (5, 3, 105, '7 Accor Terrace, Portland, OR'),
-  (5, 4, 115, '8 Accor Place, Seattle, WA');
+  (5, 5, 5, '1 Accor Drive, San Francisco, CA'),
+  (5, 4, 5, '2 Accor Street, San Francisco, CA'),
+  (5, 3, 5, '3 Accor Avenue, Los Angeles, CA'),
+  (5, 4, 5, '4 Accor Boulevard, San Diego, CA'),
+  (5, 5, 5, '5 Accor Road, Las Vegas, NV'),
+  (5, 4, 5, '6 Accor Court, Phoenix, AZ'),
+  (5, 3, 5, '7 Accor Terrace, Portland, OR'),
+  (5, 4, 5, '8 Accor Place, Seattle, WA');
 
 -- ========================================================
 -- 3. Hotel Contact Data
@@ -680,10 +688,10 @@ INSERT INTO customer (SSN, full_name, address, registration_date) VALUES
 -- 2. Booking Data (3 bookings)
 -- ==============================
 
-INSERT INTO booking (status, booking_date, check_in_date, check_out_date) VALUES
-  ('Reserved', '2025-05-01', '2025-05-10', '2025-05-12'),
-  ('Canceled', '2025-05-03', '2025-05-15', '2025-05-17'),
-  ('Reserved', '2025-05-05', '2025-05-20', '2025-05-25');
+INSERT INTO booking (customer_ID, room_ID, status, booking_date, check_in_date, check_out_date) VALUES
+  (1, 1, 'Reserved', '2025-05-01', '2025-05-10', '2025-05-12'),
+  (1, 1, 'Canceled', '2025-05-03', '2025-05-15', '2025-05-17'),
+  (1, 1, 'Reserved', '2025-05-05', '2025-05-20', '2025-05-25');
 
 -- ==============================
 -- 3. Books Data
@@ -702,9 +710,9 @@ INSERT INTO books (booking_ID, customer_ID, room_ID) VALUES
 -- 4. Renting Data
 -- ==============================
 -- Suppose 2 rentals occurred:
-INSERT INTO renting (check_in_date, check_out_date, status) VALUES
-  ('2025-05-10', '2025-05-12', 'Completed'),
-  ('2025-05-20', '2025-05-25', 'Ongoing');
+INSERT INTO renting (customer_ID, room_ID, employee_ID, check_in_date, check_out_date, status) VALUES
+  (1, 1, 1, '2025-05-10', '2025-05-12', 'Completed'),
+  (1, 1, 1, '2025-05-20', '2025-05-25', 'Ongoing');
 
 -- ==============================
 -- 5. Archive Data

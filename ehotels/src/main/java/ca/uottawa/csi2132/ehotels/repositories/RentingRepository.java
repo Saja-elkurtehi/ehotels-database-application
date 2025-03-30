@@ -16,8 +16,12 @@ public class RentingRepository {
 
     // Insert a new renting
     public void insertRenting(Renting renting) {
-        String sql = "INSERT INTO renting (check_in_date, check_out_date, status) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO renting (customer_ID, room_ID, employee_ID, check_in_date, check_out_date, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
+                renting.getCustomerId(),
+                renting.getRoomId(),
+                renting.getEmployeeId(),
                 Date.valueOf(renting.getCheckInDate()),
                 renting.getCheckOutDate() != null ? Date.valueOf(renting.getCheckOutDate()) : null,
                 renting.getStatus());
@@ -28,27 +32,35 @@ public class RentingRepository {
         String sql = "SELECT * FROM renting";
         return jdbcTemplate.query(sql, (rs, rowNum) -> new Renting(
                 rs.getLong("renting_ID"),
+                rs.getLong("customer_ID"),
+                rs.getLong("room_ID"),
+                rs.getLong("employee_ID"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null,
-                rs.getString("status")
-        ));
+                rs.getString("status")));
     }
 
     // Get renting by ID
     public Renting getRentingById(Long id) {
         String sql = "SELECT * FROM renting WHERE renting_ID = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (rs, rowNum) -> new Renting(
+        return jdbcTemplate.queryForObject(sql, new Object[] { id }, (rs, rowNum) -> new Renting(
                 rs.getLong("renting_ID"),
+                rs.getLong("customer_ID"),
+                rs.getLong("room_ID"),
+                rs.getLong("employee_ID"),
                 rs.getDate("check_in_date").toLocalDate(),
                 rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null,
-                rs.getString("status")
-        ));
+                rs.getString("status")));
     }
 
     // Update renting info (e.g. set check-out date or status)
     public void updateRenting(Long id, Renting renting) {
-        String sql = "UPDATE renting SET check_in_date = ?, check_out_date = ?, status = ? WHERE renting_ID = ?";
+        String sql = "UPDATE renting SET customer_ID = ?, room_ID = ?, employee_ID = ?, " +
+                "check_in_date = ?, check_out_date = ?, status = ? WHERE renting_ID = ?";
         jdbcTemplate.update(sql,
+                renting.getCustomerId(),
+                renting.getRoomId(),
+                renting.getEmployeeId(),
                 Date.valueOf(renting.getCheckInDate()),
                 renting.getCheckOutDate() != null ? Date.valueOf(renting.getCheckOutDate()) : null,
                 renting.getStatus(),

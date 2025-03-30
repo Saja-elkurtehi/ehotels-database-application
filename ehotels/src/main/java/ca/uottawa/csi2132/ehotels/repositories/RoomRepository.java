@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -91,5 +93,121 @@ public class RoomRepository {
     public void deleteRoomAmenities(Long roomId) {
         String sql = "DELETE FROM room_amenity WHERE room_ID = ?";
         jdbcTemplate.update(sql, roomId);
+    }
+    
+    // Original method: Returns rooms not booked or rented in the given date range 
+    // and with capacity (i.e. number of guests) >= guests.
+    public List<Room> getAvailableRoomsBetweenDates(Date startDate, Date endDate, int guests) {
+        String sql = """
+            SELECT r.* FROM room r
+            WHERE r.capacity >= ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
+        """;
+    
+        return jdbcTemplate.query(sql,
+                new Object[]{guests, endDate, startDate, endDate, startDate},
+                (rs, rowNum) -> new Room(
+                    rs.getLong("room_ID"),
+                    rs.getLong("hotel_ID"),
+                    rs.getLong("price"),
+                    rs.getBoolean("extension"),
+                    rs.getShort("capacity"),
+                    rs.getString("view_type"),
+                    rs.getString("any_problems")
+                )
+        );
+    }
+    
+    // Original method: Filter by hotel chain as well.
+    public List<Room> getAvailableRoomsBetweenDatesAndChain(Date startDate, Date endDate, int guests, Long hotelChainId) {
+        String sql = """
+            SELECT r.* FROM room r
+            JOIN hotel h ON r.hotel_ID = h.hotel_ID
+            WHERE r.capacity >= ?
+              AND h.hotel_chain_ID = ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
+        """;
+        
+        return jdbcTemplate.query(sql,
+                new Object[]{guests, hotelChainId, endDate, startDate, endDate, startDate},
+                (rs, rowNum) -> new Room(
+                    rs.getLong("room_ID"),
+                    rs.getLong("hotel_ID"),
+                    rs.getLong("price"),
+                    rs.getBoolean("extension"),
+                    rs.getShort("capacity"),
+                    rs.getString("view_type"),
+                    rs.getString("any_problems")
+                )
+        );
+    }
+    
+    // New method: Accepts additional filters for hotelCategory, area, and price range.
+    public List<Room> getAvailableRoomsWithFilters(Date startDate, Date endDate, int guests, Long hotelChainId, String hotelCategory, String area, String minPrice, String maxPrice) {
+        StringBuilder sql = new StringBuilder("SELECT r.* FROM room r JOIN hotel h ON r.hotel_ID = h.hotel_ID WHERE r.capacity >= ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(guests);
+        
+        if (hotelChainId != null) {
+            sql.append("AND h.hotel_chain_ID = ? ");
+            params.add(hotelChainId);
+        }
+        if (hotelCategory != null && !hotelCategory.isEmpty()) {
+            sql.append("AND h.rating = ? ");
+            params.add(Short.parseShort(hotelCategory));
+        }
+        if (area != null && !area.isEmpty()) {
+            sql.append("AND h.address LIKE ? ");
+            params.add("%" + area + "%");
+        }
+        if (minPrice != null && !minPrice.isEmpty() && maxPrice != null && !maxPrice.isEmpty()) {
+            sql.append("AND r.price BETWEEN ? AND ? ");
+            params.add(Long.parseLong(minPrice));
+            params.add(Long.parseLong(maxPrice));
+        }
+        
+        sql.append("AND r.room_ID NOT IN (");
+        sql.append(" SELECT b.room_ID FROM booking b WHERE b.check_in_date < ? AND b.check_out_date > ? AND b.status = 'Reserved')");
+        sql.append(" AND r.room_ID NOT IN (");
+        sql.append(" SELECT rt.room_ID FROM renting rt WHERE rt.check_in_date < ? AND rt.check_out_date > ?)");
+        
+        params.add(endDate);
+        params.add(startDate);
+        params.add(endDate);
+        params.add(startDate);
+        
+        return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> new Room(
+                rs.getLong("room_ID"),
+                rs.getLong("hotel_ID"),
+                rs.getLong("price"),
+                rs.getBoolean("extension"),
+                rs.getShort("capacity"),
+                rs.getString("view_type"),
+                rs.getString("any_problems")
+        ));
     }
 }

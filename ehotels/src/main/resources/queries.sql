@@ -21,3 +21,38 @@ JOIN books bk ON c.customer_ID = bk.customer_ID
 JOIN room r ON bk.room_ID = r.room_ID
 JOIN booking b ON bk.booking_ID = b.booking_ID
 WHERE r.view_type = 'city view';
+
+-- Query 5: rooms not booked or rented in the given date range and with capacity (i.e. number of guests) >= guests.
+SELECT r.* FROM room r
+            WHERE r.capacity >= ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
+-- filter by hotel chain
+SELECT r.* FROM room r
+            JOIN hotel h ON r.hotel_ID = h.hotel_ID
+            WHERE r.capacity >= ?
+              AND h.hotel_chain_ID = ?
+              AND r.room_ID NOT IN (
+                  SELECT b.room_ID
+                  FROM booking b
+                  WHERE b.check_in_date < CAST(? AS DATE)
+                    AND b.check_out_date > CAST(? AS DATE)
+                    AND b.status = 'Reserved'
+              )
+              AND r.room_ID NOT IN (
+                  SELECT rt.room_ID
+                  FROM renting rt
+                  WHERE rt.check_in_date < CAST(? AS DATE)
+                    AND rt.check_out_date > CAST(? AS DATE)
+              )
