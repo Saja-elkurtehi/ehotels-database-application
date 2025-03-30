@@ -25,6 +25,17 @@ public class BookingController {
         bookingRepository.linkBooking(bookingId, booking.getCustomerId(), booking.getRoomId());
         return ResponseEntity.ok("Booking created and linked with ID: " + bookingId);
     }
+   // Create a booking with customer and room details via query parameters
+    @PostMapping("/with-params")
+    public ResponseEntity<String> create2Booking(@RequestBody Booking booking,
+                                                @RequestParam Long customerId,
+                                                @RequestParam Long roomId) {
+        booking.setCustomerId(customerId);
+        booking.setRoomId(roomId);
+        Long bookingId = bookingRepository.insertBooking(booking);
+        bookingRepository.linkBooking(bookingId, customerId, roomId);
+        return ResponseEntity.ok("Booking created and linked with ID: " + bookingId);
+    }
 
     // Get all bookings
     @GetMapping
