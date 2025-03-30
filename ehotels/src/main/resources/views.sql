@@ -1,7 +1,7 @@
 -- view 1 num of available rooms per area 
 CREATE OR REPLACE VIEW available_rooms_per_area AS
 SELECT
-    h.address,
+    h.hotel_id, h.address,
     COUNT(DISTINCT r.room_id) AS available_rooms
 FROM
     room r
@@ -24,7 +24,7 @@ WHERE
         AND CURRENT_DATE BETWEEN rnt.check_in_date AND rnt.check_out_date
     )
 GROUP BY
-    h.address;
+    h.hotel_id, h.address;
 
 -- view 2 aggregated capac of all rooms per hotel
 CREATE OR REPLACE VIEW aggregated_room_capacity AS
