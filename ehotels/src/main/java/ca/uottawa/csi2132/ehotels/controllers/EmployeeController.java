@@ -15,11 +15,12 @@ public class EmployeeController {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    // Create a new employee
+    // Create a new employee and return the created employee (with ID)
     @PostMapping
-    public ResponseEntity<String> createEmployee(@RequestBody Employee employee) {
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
         employeeRepository.insertEmployee(employee);
-        return ResponseEntity.ok("Employee created");
+        // Here, it is assumed that the employee object now contains the generated ID.
+        return ResponseEntity.ok(employee);
     }
 
     // Get all employees

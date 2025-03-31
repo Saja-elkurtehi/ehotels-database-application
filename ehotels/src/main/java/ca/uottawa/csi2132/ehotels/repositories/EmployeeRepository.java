@@ -3,8 +3,12 @@ package ca.uottawa.csi2132.ehotels.repositories;
 import ca.uottawa.csi2132.ehotels.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -16,7 +20,19 @@ public class EmployeeRepository {
     // Insert a new employee
     public void insertEmployee(Employee employee) {
         String sql = "INSERT INTO employee (SSN, full_name, address) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, employee.getSSN(), employee.getFullName(), employee.getAddress());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"employee_id"});
+            ps.setInt(1, employee.getSSN());
+            ps.setString(2, employee.getFullName());
+            ps.setString(3, employee.getAddress());
+            return ps;
+        }, keyHolder);
+        
+        if (keyHolder.getKey() != null) {
+            employee.setEmployeeId(keyHolder.getKey().longValue());
+        }
     }
 
     // Assign a role to an employee

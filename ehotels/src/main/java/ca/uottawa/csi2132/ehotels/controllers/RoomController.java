@@ -81,9 +81,10 @@ public class RoomController {
         List<Room> availableRooms;
 
         // Use the new filters if any additional filter is provided.
+        boolean hasPriceRange = (minPrice != null && !minPrice.isEmpty() && maxPrice != null && !maxPrice.isEmpty());
         boolean hasAdditionalFilters = (hotelCategory != null && !hotelCategory.isEmpty()) ||
-                (area != null && !area.isEmpty()) ||
-                (minPrice != null && !minPrice.isEmpty() && maxPrice != null && !maxPrice.isEmpty());
+            (area != null && !area.isEmpty()) || hasPriceRange;
+        
 
         if (hasAdditionalFilters) {
             availableRooms = roomRepository.getAvailableRoomsWithFilters(startDate, endDate, guests, hotelChainId,

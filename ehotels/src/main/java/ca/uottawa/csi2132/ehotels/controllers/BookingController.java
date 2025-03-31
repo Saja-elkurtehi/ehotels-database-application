@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;                     // For HttpStatu
 import java.util.Map;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -46,6 +47,24 @@ public class BookingController {
             ));
         }
     }
+    @GetMapping("/overlap-check")
+    public ResponseEntity<?> getOverlappingBookings(@RequestParam Long roomId,
+                                                    @RequestParam String checkInDate,
+                                                    @RequestParam String checkOutDate) {
+        try {
+            // Parse the date strings into LocalDate
+            LocalDate checkIn = LocalDate.parse(checkInDate);
+            LocalDate checkOut = LocalDate.parse(checkOutDate);
+            
+            // Query for overlapping bookings
+            List<Booking> overlappingBookings = bookingRepository.getOverlappingBookings(roomId, checkIn, checkOut);
+            return ResponseEntity.ok(overlappingBookings);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                 .body(Map.of("error", "invalid_parameters", "message", e.getMessage()));
+        }
+    }
+    
    // Create a booking with customer and room details via query parameters
     @PostMapping("/with-params")
     public ResponseEntity<String> create2Booking(@RequestBody Booking booking,
