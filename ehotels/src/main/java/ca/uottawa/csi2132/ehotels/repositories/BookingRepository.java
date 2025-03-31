@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -33,6 +34,26 @@ public class BookingRepository {
         String sql = "INSERT INTO books (booking_ID, customer_ID, room_ID) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, bookingId, customerId, roomId);
     }
+    public List<Booking> getOverlappingBookings(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        String sql = "SELECT * FROM booking " +
+                     "WHERE room_ID = ? " +
+                     "AND check_in_date < ? " +
+                     "AND check_out_date > ?";
+        return jdbcTemplate.query(sql, new Object[] { 
+            roomId, 
+            Date.valueOf(checkOut),  // compare with requested checkOutDate
+            Date.valueOf(checkIn)    // compare with requested checkInDate
+        }, (rs, rowNum) -> new Booking(
+                rs.getLong("booking_ID"),
+                rs.getLong("customer_ID"),
+                rs.getLong("room_ID"),
+                rs.getString("status"),
+                rs.getDate("booking_date").toLocalDate(),
+                rs.getDate("check_in_date") != null ? rs.getDate("check_in_date").toLocalDate() : null,
+                rs.getDate("check_out_date") != null ? rs.getDate("check_out_date").toLocalDate() : null
+        ));
+    }
+    
 
     // Get all bookings
     public List<Booking> getAllBookings() {
