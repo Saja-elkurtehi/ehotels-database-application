@@ -3,9 +3,12 @@ package ca.uottawa.csi2132.ehotels.repositories;
 import ca.uottawa.csi2132.ehotels.entities.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -23,6 +26,25 @@ public class CustomerRepository {
                 customer.getAddress(),
                 Date.valueOf(customer.getRegistrationDate()));
     }
+    public void insertCustomer2(Customer customer) {
+        String sql = "INSERT INTO customer (SSN, full_name, address, registration_date) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        
+        jdbcTemplate.update(connection -> {
+            // Use "customer_id" in lower-case (the actual column name in PostgreSQL)
+            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"customer_id"});
+            ps.setString(1, customer.getSSN());
+            ps.setString(2, customer.getFullName());
+            ps.setString(3, customer.getAddress());
+            ps.setDate(4, Date.valueOf(customer.getRegistrationDate()));
+            return ps;
+        }, keyHolder);
+        
+        if (keyHolder.getKey() != null) {
+            customer.setCustomerId(keyHolder.getKey().longValue());
+        }
+    }
+    
 
     // Get all customers
     public List<Customer> getAllCustomers() {

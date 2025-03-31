@@ -21,6 +21,13 @@ public class CustomerController {
         customerRepository.insertCustomer(customer);
         return ResponseEntity.ok("Customer created");
     }
+    @PostMapping("/with-id")
+    public ResponseEntity<Customer> createCustomer2(@RequestBody Customer customer) {
+        customerRepository.insertCustomer2(customer);
+        // Assumes the customer object is updated with the generated ID
+        return ResponseEntity.ok(customer);
+    }
+    
 
     // Get all customers
     @GetMapping
