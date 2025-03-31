@@ -5,6 +5,10 @@ import ca.uottawa.csi2132.ehotels.repositories.BookingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;  // For @Transactional
+import org.springframework.http.HttpStatus;                     // For HttpStatus
+import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.List;
 
@@ -18,12 +22,29 @@ public class BookingController {
     // Create a booking. The booking data comes in the request body,
     // and the customerId and roomId are provided as query parameters.
     @PostMapping
-    public ResponseEntity<String> createBooking(@RequestBody Booking booking) {
-        // Insert the booking and retrieve the generated ID
-        Long bookingId = bookingRepository.insertBooking(booking);
-        // Link the booking with customer and room (if necessary)
-        bookingRepository.linkBooking(bookingId, booking.getCustomerId(), booking.getRoomId());
-        return ResponseEntity.ok("Booking created and linked with ID: " + bookingId);
+    @Transactional
+    public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
+        try {
+            Long bookingId = bookingRepository.insertBooking(booking);
+            bookingRepository.linkBooking(bookingId, booking.getCustomerId(), booking.getRoomId());
+
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "bookingId", bookingId
+            ));
+        } catch (DataIntegrityViolationException e) {
+            // Extract the PostgreSQL error message
+            String pgError = e.getMostSpecificCause().getMessage();
+
+            // Create user-friendly response
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                    "error", "booking_conflict",
+                    "message", "The room is not available for your selected dates",
+                    "details", pgError,  // Original error for debugging
+                    "roomId", booking.getRoomId(),
+                    "suggestion", "Please try different dates or another room"
+            ));
+        }
     }
    // Create a booking with customer and room details via query parameters
     @PostMapping("/with-params")

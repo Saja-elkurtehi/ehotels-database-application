@@ -26,34 +26,21 @@ FOR EACH ROW EXECUTE FUNCTION update_num_of_rooms();
 -- trigger to not allow double booking of a room
 CREATE OR REPLACE FUNCTION prevent_double_booking()
 RETURNS TRIGGER AS '
-DECLARE
-    new_check_in DATE;
-    new_check_out DATE;
 BEGIN
-    SELECT check_in_date, check_out_date INTO new_check_in, new_check_out
-    FROM booking
-    WHERE booking_ID = NEW.booking_ID;
-    
     IF EXISTS (
-        SELECT 1 
+        SELECT 1
         FROM books b
         JOIN booking bk ON b.booking_ID = bk.booking_ID
         WHERE b.room_ID = NEW.room_ID
         AND bk.booking_ID != NEW.booking_ID
         AND bk.status != ''cancelled''
         AND (
-            (new_check_in <= bk.check_out_date) AND (new_check_out >= bk.check_in_date)
+            (bk.check_in_date <= (SELECT check_out_date FROM booking WHERE booking_ID = NEW.booking_ID)) AND
+            (bk.check_out_date >= (SELECT check_in_date FROM booking WHERE booking_ID = NEW.booking_ID))
         )
     ) THEN
-        RAISE EXCEPTION ''room is already booked for this period'';
+        RAISE EXCEPTION ''Room % is already booked for the selected dates'', NEW.room_ID;
     END IF;
-
     RETURN NEW;
 END;
 ' LANGUAGE plpgsql;
-
-DROP TRIGGER IF EXISTS check_double_booking ON books;
-
-CREATE TRIGGER check_double_booking
-BEFORE INSERT ON books
-FOR EACH ROW EXECUTE FUNCTION prevent_double_booking();
